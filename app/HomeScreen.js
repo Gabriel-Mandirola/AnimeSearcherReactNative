@@ -1,18 +1,21 @@
-import 'react-native-gesture-handler';
-import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, View, TextInput, Button } from 'react-native';
-function HomeScreen(props) {
-    const [election, onChangeElection] = React.useState("")
+import React from 'react';
+import { ImageBackground, StyleSheet, View, TextInput, Button, Image } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+function HomeScreen({ navigation }) {
+    const [text, onChangetext] = React.useState("")
 
     return (
         <View style={styles.container}>
             <ImageBackground source={require('./assets/FondoNubesAnime.jpg')} resizeMode="cover" style={styles.imageBackground}>
+                <Image source={require('./assets/Myanimelist_logo.png')} resizeMode="cover" style={styles.logo}></Image>
                 <TextInput
                     placeholder="¿Qué animé querés buscar?"
                     style={styles.textInput}
-                    onChangeText={onChangeElection}
-                    value={election}
+                    onChangeText={onChangetext}
+                    value={text}
                 />
                 <Button
                     title="Buscar"
@@ -44,8 +47,10 @@ const styles = StyleSheet.create({
     },
     button: {
         color: '#FFFFFF',
+    },
+    logo: {
+        width: '80%',
+        height: '10%',
+        resizeMode: 'contain'
     }
-
-
-
 });
