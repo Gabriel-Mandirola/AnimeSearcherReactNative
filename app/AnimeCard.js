@@ -1,5 +1,7 @@
 import 'react-native-gesture-handler';
+
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, StyleSheet, Text, Image, Button } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,9 +9,75 @@ import { createStackNavigator } from '@react-navigation/stack';
 function AnimeCard({ route, navigation }) {
     const [animeData, setAnimeData] = React.useState();
     const [status, setStatus] = React.useState("idle");
-    const { anime } = route.params
-    console.log(anime)
 
+    const { anime } = route.params
+    //console.log("anime" + anime)
+
+    const storeData = async (value) => {
+        try {
+            const jsonValue = JSON.stringify(value)
+            await AsyncStorage.setItem(value.mal_id, jsonValue)
+            console.log("el valor es: 9+++++++++++++++++++++" + value.title)
+            //console.log("asyncccccccccccccccccccccccccccccc" + AsyncStorage)
+        } catch (e) {
+            // saving error
+        }
+    }
+    const removeData = async (key) => {
+        try {
+            await AsyncStorage.removeItem(key)
+            //console.log("asyncccccccccccccccccccccccccccccc" + AsyncStorage)
+        } catch (e) {
+            // saving error
+        }
+    }
+
+
+    //imprimirAnime()
+    // console.log("storeData:" + storeData)
+
+    const getData = async (animeID) => {
+        try {
+            const jsonValue = await AsyncStorage.getItem(animeID)
+            if (jsonValue != null) {
+                console.log("retorna algo")
+                //console.log(JSON.parse(jsonValue))
+                return JSON.parse(jsonValue)
+            } else {
+                console.log("no retorna nada")
+                return null
+            }
+            //return jsonValue != null ? JSON.parse(jsonValue) : null;
+        } catch (e) {
+            // error reading value
+        }
+    }
+
+    //animeData && console.log("getData: " + getData().then((data) => { console.log(data) }))
+
+    // removeValue = async () => {
+    //     try {
+    //         await AsyncStorage.removeItem('@MyApp_key')
+    //     } catch (e) {
+    //         // remove error
+    //     }
+
+    //     console.log('Done.')
+    // }
+    const getAllKeys = async () => {
+        let keys = []
+        try {
+            keys = await AsyncStorage.getAllKeys()
+        } catch (e) {
+            // read key error
+        }
+
+        console.log(keys)
+        // example console.log result:
+        // ['@MyApp_user', '@MyApp_key']
+    }
+    getAllKeys()
+    //console.log("allKeys KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + getAllKeys)
 
     React.useEffect(() => {
         setStatus("loading");
@@ -29,12 +97,32 @@ function AnimeCard({ route, navigation }) {
 
     function imprimirAnime() {
         if (animeData) {
+            console.log("animeData-----------------------------")
             console.log(animeData)
-            console.log(animeData[0].image_url)
+            //console.log(animeData[0].image_url)
         }
     }
 
-    imprimirAnime()
+    function isAnimeAdded() {
+        if (animeData && getData(animeData[0].mal_id) != null) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    function storeDataAndPrint() {
+        animeData && storeData(animeData[0])
+        //animeData && console.log(getData(animeData[0].mal_id))
+        getAllKeys()
+        //console.log(isAnimeAdded())
+    }
+
+    function deleteData() {
+        removeData(animeData[0].mal_id)
+        getAllKeys()
+    }
+    //imprimirAnime()
     if (status === "idle") {
         return (
             <View style={styles.container}>
@@ -44,7 +132,12 @@ function AnimeCard({ route, navigation }) {
                     {animeData && <Image style={styles.image} source={{ uri: animeData[0].image_url }} />}
                 </View>
                 <Button
-                    title="Agregar a favoritos"
+                    title={"agregar a favoritos"}
+                    onPress={() => storeDataAndPrint()}
+                    style={styles.button}
+                /><Button
+                    title={"Eliminar de favoritos"}
+                    onPress={() => deleteData()}
                     style={styles.button}
                 />
 
