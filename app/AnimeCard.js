@@ -94,18 +94,24 @@ function AnimeCard({ route, navigation }) {
 
     React.useEffect(() => {
         setStatus("loading");
-        fetch(`https://api.jikan.moe/v3/search/anime?q=${anime}&limit=1`)
-            .then((response) => {
-                response.json().then((data) => {
-                    setAnimeData(data.results)
-                    if (data.results.length !== 0) {
+        if (anime) {
+
+
+            fetch(`https://api.jikan.moe/v3/search/anime?q=${anime}&limit=1`)
+                .then((response) => {
+                    response.json().then((data) => {
                         setAnimeData(data.results)
-                        setStatus("idle")
-                    } else {
-                        setStatus("error")
-                    }
+                        if (data.results.length !== 0) {
+                            setAnimeData(data.results)
+                            setStatus("idle")
+                        } else {
+                            setStatus("error")
+                        }
+                    })
                 })
-            })
+        } else {
+            setStatus("error")
+        }
     }, [])
 
     function storeDataAndPrint() {
@@ -146,9 +152,9 @@ function AnimeCard({ route, navigation }) {
         )
     } else if (status === "error") {
         return (
-            <View>
-                <Button onClick={() => history.push("/")}>Volver</Button>
-                <Text>Algo salio mal</Text></View>
+            <View style={styles.container}>
+                <Text>{anime && "Algo salio mal"}{!anime && "Ingresa un anime antes de buscar, minimo 3 letras"}</Text>
+            </View>
         )
     }
 }
