@@ -94,7 +94,7 @@ function AnimeCard({ route, navigation }) {
 
     React.useEffect(() => {
         setStatus("loading");
-        if (anime) {
+        if (anime.length > 2) {
 
 
             fetch(`https://api.jikan.moe/v3/search/anime?q=${anime}&limit=1`)
@@ -153,7 +153,7 @@ function AnimeCard({ route, navigation }) {
     } else if (status === "error") {
         return (
             <View style={styles.container}>
-                <Text>{anime && "Algo salio mal"}{!anime && "Ingresa un anime antes de buscar, minimo 3 letras"}</Text>
+                <Text>{anime.length > 2 && "Algo salio mal"}{anime.length < 3 && "Ingresa un anime antes de buscar, minimo 3 letras"}</Text>
             </View>
         )
     }
