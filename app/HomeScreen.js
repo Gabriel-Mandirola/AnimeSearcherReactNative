@@ -22,6 +22,11 @@ function HomeScreen({ navigation }) {
                     onPress={() => navigation.navigate('AnimeCard', { anime: text })}
                     style={styles.button}
                 />
+                {/* <Button
+                    title={"Ver favoritos"}
+                    onPress={() => navigation.navigate('Favorites')}
+                    style={styles.button}
+                /> */}
             </ImageBackground>
             <StatusBar style="inverted" />
         </View>
